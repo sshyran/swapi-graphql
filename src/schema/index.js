@@ -25,6 +25,7 @@ import {
 } from 'graphql-relay';
 
 import { getObjectsByType, getObjectFromTypeAndId } from './apiHelper';
+import { filterHelper } from './filterHelper';
 
 import { swapiTypeToGraphQLType, nodeField } from './relayNode';
 
@@ -97,20 +98,9 @@ full "{ edges { node } }" version should be used instead.`,
     args: { ...connectionArgs, name: { type: GraphQLString } },
     resolve: async (_, args) => {
       let { objects, totalCount } = await getObjectsByType(swapiType);
-      if (args.name) {
-        /**
-         * `Film` has a `title` instead of a `name` to filter,
-         * it will be filtered in the else block
-         */
-        if (name !== 'Films') {
-          objects = objects.filter(obj =>
-            obj.name.toLowerCase().includes(args.name.toLowerCase()),
-          );
-        } else {
-          objects = objects.filter(obj =>
-            obj.title.toLowerCase().includes(args.name.toLowerCase()),
-          );
-        }
+      const connection = { name: name, objects: objects, args: args };
+      if (Object.entries(args).length !== 0) {
+        objects = await filterHelper(connection);
         totalCount = objects.length;
       }
       return {
