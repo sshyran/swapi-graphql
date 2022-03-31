@@ -50,9 +50,8 @@ function rootFieldByID(idName, swapiType) {
 
       if (args.episodeID !== undefined && args.episodeID !== null) {
         const { objects } = await getObjectsByType(swapiType);
-        const filteredObject = objects.filter(
-          obj => obj.episode_id === args.episodeID,
-        );
+        const connection = { name: idName, objects: objects, args: args };
+        const filteredObject = await filterHelper(connection);
         return filteredObject[0];
       }
 
@@ -104,9 +103,15 @@ full "{ edges { node } }" version should be used instead.`,
   });
   return {
     type: connectionType,
-    args: { ...connectionArgs, name: { type: GraphQLString } },
+    args: {
+      ...connectionArgs,
+      name: { type: GraphQLString },
+      withCharacter: { type: GraphQLString },
+    },
     resolve: async (_, args) => {
-      let { objects, totalCount } = await getObjectsByType(swapiType);
+      let { objects, totalCount } = await getObjectsByType(
+        args.withCharacter ? 'people' : swapiType,
+      );
       const connection = { name: name, objects: objects, args: args };
       if (Object.entries(args).length !== 0) {
         objects = await filterHelper(connection);
