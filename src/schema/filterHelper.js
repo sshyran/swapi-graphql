@@ -1,17 +1,11 @@
-let name;
-let objects;
-let args;
-
 export async function filterHelper(connection) {
-  name = connection.name;
-  objects = connection.objects;
-  args = connection.args;
   if (args.name) {
-    return getObjectsFilteredByName();
+    return getObjectsFilteredByName(connection);
   }
 }
 
-function getObjectsFilteredByName() {
+function getObjectsFilteredByName(con) {
+  const { name, objects, args } = con;
   if (name === 'Films') {
     return objects.filter(obj => isIncluded(obj.title, args.name));
   }

@@ -39,12 +39,21 @@ function rootFieldByID(idName, swapiType) {
   const argDefs = {};
   argDefs.id = { type: GraphQLID };
   argDefs[idName] = { type: GraphQLID };
+  argDefs.episodeID = { type: GraphQLInt };
   return {
     type: swapiTypeToGraphQLType(swapiType),
     args: argDefs,
-    resolve: (_, args) => {
+    resolve: async (_, args) => {
       if (args[idName] !== undefined && args[idName] !== null) {
         return getter(args[idName]);
+      }
+
+      if (args.episodeID !== undefined && args.episodeID !== null) {
+        const { objects } = await getObjectsByType(swapiType);
+        const filteredObject = objects.filter(
+          obj => obj.episode_id === args.episodeID,
+        );
+        return filteredObject[0];
       }
 
       if (args.id !== undefined && args.id !== null) {
