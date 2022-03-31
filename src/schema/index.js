@@ -14,6 +14,7 @@ import {
   GraphQLList,
   GraphQLObjectType,
   GraphQLSchema,
+  GraphQLString,
 } from 'graphql';
 
 import {
@@ -93,9 +94,25 @@ full "{ edges { node } }" version should be used instead.`,
   });
   return {
     type: connectionType,
-    args: connectionArgs,
+    args: { ...connectionArgs, name: { type: GraphQLString } },
     resolve: async (_, args) => {
-      const { objects, totalCount } = await getObjectsByType(swapiType);
+      let { objects, totalCount } = await getObjectsByType(swapiType);
+      if (args.name) {
+        /**
+         * `Film` has a `title` instead of a `name` to filter,
+         * it will be filtered in the else block
+         */
+        if (name !== 'Films') {
+          objects = objects.filter(obj =>
+            obj.name.toLowerCase().includes(args.name.toLowerCase()),
+          );
+        } else {
+          objects = objects.filter(obj =>
+            obj.title.toLowerCase().includes(args.name.toLowerCase()),
+          );
+        }
+        totalCount = objects.length;
+      }
       return {
         ...connectionFromArray(objects, args),
         totalCount,
