@@ -25,6 +25,7 @@ import {
 } from 'graphql-relay';
 
 import { getObjectsByType, getObjectFromTypeAndId } from './apiHelper';
+import { filterHelper } from './filterHelper';
 
 import { swapiTypeToGraphQLType, nodeField } from './relayNode';
 
@@ -38,12 +39,20 @@ function rootFieldByID(idName, swapiType) {
   const argDefs = {};
   argDefs.id = { type: GraphQLID };
   argDefs[idName] = { type: GraphQLID };
+  argDefs.episodeID = { type: GraphQLInt };
   return {
     type: swapiTypeToGraphQLType(swapiType),
     args: argDefs,
-    resolve: (_, args) => {
+    resolve: async (_, args) => {
       if (args[idName] !== undefined && args[idName] !== null) {
         return getter(args[idName]);
+      }
+
+      if (args.episodeID !== undefined && args.episodeID !== null) {
+        const { objects } = await getObjectsByType(swapiType);
+        const connection = { name: idName, objects: objects, args: args };
+        const filteredObject = await filterHelper(connection);
+        return filteredObject[0];
       }
 
       if (args.id !== undefined && args.id !== null) {
@@ -94,23 +103,18 @@ full "{ edges { node } }" version should be used instead.`,
   });
   return {
     type: connectionType,
-    args: { ...connectionArgs, name: { type: GraphQLString } },
+    args: {
+      ...connectionArgs,
+      name: { type: GraphQLString },
+      withCharacter: { type: GraphQLString },
+    },
     resolve: async (_, args) => {
-      let { objects, totalCount } = await getObjectsByType(swapiType);
-      if (args.name) {
-        /**
-         * `Film` has a `title` instead of a `name` to filter,
-         * it will be filtered in the else block
-         */
-        if (name !== 'Films') {
-          objects = objects.filter(obj =>
-            obj.name.toLowerCase().includes(args.name.toLowerCase()),
-          );
-        } else {
-          objects = objects.filter(obj =>
-            obj.title.toLowerCase().includes(args.name.toLowerCase()),
-          );
-        }
+      let { objects, totalCount } = await getObjectsByType(
+        args.withCharacter ? 'people' : swapiType,
+      );
+      const connection = { name: name, objects: objects, args: args };
+      if (Object.entries(args).length !== 0) {
+        objects = await filterHelper(connection);
         totalCount = objects.length;
       }
       return {
