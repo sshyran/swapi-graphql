@@ -7,17 +7,17 @@
  *
  */
 
- import cors from 'cors';
- import fs from 'fs';
- import express from 'express';
- import graphqlHTTP from 'express-graphql';
- import swapiSchema from './schema/index';
- 
- const app = express();
- 
- app.use(cors());
- 
- /* 
+import cors from 'cors';
+import fs from 'fs';
+import express from 'express';
+import graphqlHTTP from 'express-graphql';
+import swapiSchema from './schema/index';
+
+const app = express();
+
+app.use(cors());
+
+/* 
  // Requests to /graphql redirect to /
  app.all('/graphql', (req, res) => res.redirect('/'));
  
@@ -25,22 +25,21 @@
  app.use('/graphiql', express.static('./public'));
   */
 
- // Provide the static schema for reference in a few formats
- app.get('/schema', (req, res) => {
-   res.set('Content-Type', 'text');
-   fs.readFile('./schema.graphql', 'utf-8', (err, file) => {
-     res.write(Buffer.from(file));
-     res.end();
-   });
- });
- // octet-stream
- app.use('/schema.graphql', express.static('./schema.graphql'));
- 
- // Finally, serve up the GraphQL Schema itself
- app.use(
-   '/graphql',
-   graphqlHTTP(() => ({ schema: swapiSchema, graphiql: true })),
- );
- 
- module.exports = app;
- 
+// Provide the static schema for reference in a few formats
+app.get('/schema', (req, res) => {
+  res.set('Content-Type', 'text');
+  fs.readFile('./schema.graphql', 'utf-8', (err, file) => {
+    res.write(Buffer.from(file));
+    res.end();
+  });
+});
+// octet-stream
+app.use('/schema.graphql', express.static('./schema.graphql'));
+
+// Finally, serve up the GraphQL Schema itself
+app.use(
+  '/',
+  graphqlHTTP(() => ({ schema: swapiSchema, graphiql: true })),
+);
+
+module.exports = app;
