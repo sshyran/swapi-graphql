@@ -3,11 +3,6 @@
   command = "npm run download && npm run build"
 
 [[redirects]]
-  from = "/*"
-  to = "/"
-  status = 301
-  
-[[redirects]]
   from = "/"
   to = "/.netlify/functions/index"
   status = 200
