@@ -9,23 +9,21 @@
  */
 
 import {
-  GraphQLID,
   GraphQLInt,
   GraphQLList,
   GraphQLObjectType,
   GraphQLSchema,
-  GraphQLString,
 } from 'graphql';
 
 import {
   fromGlobalId,
   connectionFromArray,
-  connectionArgs,
   connectionDefinitions,
 } from 'graphql-relay';
 
 import { getObjectsByType, getObjectFromTypeAndId } from './apiHelper';
 import { filterHelper } from './filterHelper';
+import { getArgsByName } from './argsHelper';
 
 import { swapiTypeToGraphQLType, nodeField } from './relayNode';
 
@@ -36,13 +34,9 @@ import { swapiTypeToGraphQLType, nodeField } from './relayNode';
  */
 function rootFieldByID(idName, swapiType) {
   const getter = id => getObjectFromTypeAndId(swapiType, id);
-  const argDefs = {};
-  argDefs.id = { type: GraphQLID };
-  argDefs[idName] = { type: GraphQLID };
-  argDefs.episodeID = { type: GraphQLInt };
   return {
     type: swapiTypeToGraphQLType(swapiType),
-    args: argDefs,
+    args: getArgsByName(idName),
     resolve: async (_, args) => {
       if (args[idName] !== undefined && args[idName] !== null) {
         return getter(args[idName]);
@@ -103,11 +97,7 @@ full "{ edges { node } }" version should be used instead.`,
   });
   return {
     type: connectionType,
-    args: {
-      ...connectionArgs,
-      name: { type: GraphQLString },
-      withCharacter: { type: GraphQLString },
-    },
+    args: getArgsByName(name),
     resolve: async (_, args) => {
       let { objects, totalCount } = await getObjectsByType(
         args.withCharacter ? 'people' : swapiType,
