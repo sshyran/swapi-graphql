@@ -28,6 +28,7 @@
   "scripts": {
     "postinstall": "npm run download && npm run build",
     "start": "node lib/server",
+    "dev": "npm install && npm start",
     "watch": "babel scripts/watch.js | node",
     "test": "npm run lint && npm run check && npm run test:only",
     "test:only": "jest",

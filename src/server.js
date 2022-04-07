@@ -8,9 +8,5 @@ const listener = app.listen(3000 || undefined, () => {
   }
   const port = listener.address().port;
   // eslint-disable-next-line no-console
-  console.log(
-    'Listening at http://%s%s/graphql',
-    host,
-    port === 80 ? '' : ':' + port,
-  );
+  console.log('Listening at http://%s%s/', host, port === 80 ? '' : ':' + port);
 });
