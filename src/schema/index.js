@@ -105,6 +105,7 @@ full "{ edges { node } }" version should be used instead.`,
       const connection = { name: name, objects: objects, args: args };
       if (Object.entries(args).length !== 0) {
         objects = await filterHelper(connection);
+        console.log('in index.js objects: ', objects);
         totalCount = objects.length;
       }
       return {
