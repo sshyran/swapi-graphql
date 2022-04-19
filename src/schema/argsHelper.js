@@ -17,7 +17,15 @@ function getObjectListArgs(name) {
     ...standardArgs,
     withCharacter: { type: GraphQLString },
   };
-  const peopleArgs = { ...standardArgs };
+  const peopleArgs = {
+    ...standardArgs,
+    birth_year: { type: GraphQLInt },
+    eye_color: { type: GraphQLString },
+    gender: { type: GraphQLString },
+    hair_color: { type: GraphQLString },
+    minHeight: { type: GraphQLInt },
+    maxHeight: { type: GraphQLInt },
+  };
 
   if (name === 'Films') {
     return filmArgs;

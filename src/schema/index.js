@@ -133,6 +133,7 @@ const rootType = new GraphQLObjectType({
     starship: rootFieldByID('starshipID', 'starships'),
     allVehicles: rootConnection('Vehicles', 'vehicles'),
     vehicle: rootFieldByID('vehicleID', 'vehicles'),
+    getAllPossiblePeopleFilters: rootConnection('Filters', 'filter'),
     node: nodeField,
   }),
 });

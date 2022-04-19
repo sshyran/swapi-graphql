@@ -1,35 +1,49 @@
 import { getObjectsFromUrls } from './apiHelper';
 
 export async function filterHelper(connection) {
-  const { args } = connection;
-  if (args.name) {
-    return getObjectsFilteredByName(connection);
-  }
-  if (args.episodeID) {
-    return getObjectsFilteredByID(connection);
+  let { name, objects, args } = connection;
+  if (name === 'People') {
+    objects = await peopleHelper(objects, args);
   }
   if (args.withCharacter) {
-    const people = getObjectsFilteredByName(connection);
-    return getObjectsFromUrls(people[0].films);
+    const people = objects.filter(obj =>
+      isIncluded(obj.name, args.withCharacter),
+    );
+    objects = await getObjectsFromUrls(people[0].films);
   }
+  if (args.title) {
+    objects = await objects.filter(obj => isIncluded(obj.title, args.title));
+  }
+
+  if (args.episode_id) {
+    objects = await objects.filter(obj =>
+      isIdentical(obj.episode_id, args.episodeID),
+    );
+  }
+  return objects;
 }
 
-async function getObjectsFilteredByID(con) {
-  const { name, objects, args } = con;
-  if (name === 'filmID') {
-    return objects.filter(obj => isIdentical(obj.episode_id, args.episodeID));
+async function peopleHelper(objects, args) {
+  for (let arg in args) {
+    objects = await objects.filter(obj => {
+      if (arg === 'name') {
+        return isIncluded(obj[arg], args[arg]);
+      }
+      if (arg !== 'name' && !arg.includes('Height')) {
+        return isIdentical(obj[arg] === args[arg]);
+      }
+      if (arg.includes('Height')) {
+        if (!args.minHeight) {
+          args.minHeight = -9999;
+        }
+        if (!args.maxHeight) {
+          args.maxHeight = 9999;
+        }
+        return args.minHeight <= obj.height && obj.height <= args.maxHeight;
+      }
+    });
   }
-}
-
-function getObjectsFilteredByName(con) {
-  const { name, objects, args } = con;
-  if (name === 'Films' && args.name) {
-    return objects.filter(obj => isIncluded(obj.title, args.name));
-  }
-  if (name === 'Films' && args.withCharacter) {
-    return objects.filter(obj => isIncluded(obj.name, args.withCharacter));
-  }
-  return objects.filter(obj => isIncluded(obj.name, args.name));
+  return objects;
 }
 
 function isIncluded(searchLocation, searchTerm) {
