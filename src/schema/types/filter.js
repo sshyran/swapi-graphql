@@ -16,7 +16,7 @@ import { nodeInterface } from '../relayNode';
 import { createdField, editedField } from '../commonFields';
 
 /**
- * The GraphQL type equivalent of the Film resource
+ * The GraphQL type equivalent of the Filter resource
  */
 const FilterType = new GraphQLObjectType({
   name: 'Filter',
