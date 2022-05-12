@@ -12279,21 +12279,24 @@
         "type": "enum",
         "created": "2022-04-14T15:07:01.792000Z",
         "edited": "2022-04-14T15:07:01.792000Z",
-        "url": "https://swapi.dev/api/filter/3/"
+        "url": "https://swapi.dev/api/filter/3/",
+        "values": [ "black", "blue", "blue-gray", "brown", "gold", "green, yellow", "hazel", "orange", "pink", "red", "red, blue", "unkown", "yellow"]
       },
       {
         "name": "gender",
         "type": "enum",
         "created": "2022-04-14T15:07:01.792000Z",
         "edited": "2022-04-14T15:07:01.792000Z",
-        "url": "https://swapi.dev/api/filter/4/"
+        "url": "https://swapi.dev/api/filter/4/",
+        "values": ["female", "hermaphrodite", "male", "none", "n/a"]
       },
       {
         "name": "hair_color",
         "type": "enum",
         "created": "2022-04-14T15:07:01.792000Z",
         "edited": "2022-04-14T15:07:01.792000Z",
-        "url": "https://swapi.dev/api/filter/5/"
+        "url": "https://swapi.dev/api/filter/5/",
+        "values": ["auburn", "auburn, grey", "auburn, white", "black", "blond", "blonde", "brown", "brown, grey", "grey", "none", "n/a", "white"]
       },
       {
         "name": "minHeight",

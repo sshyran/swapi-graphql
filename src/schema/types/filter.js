@@ -8,7 +8,7 @@
  * @flow strict
  */
 
-import { GraphQLObjectType, GraphQLString } from 'graphql';
+import { GraphQLList, GraphQLObjectType, GraphQLString } from 'graphql';
 
 import { globalIdField } from 'graphql-relay';
 
@@ -29,6 +29,10 @@ const FilterType = new GraphQLObjectType({
     type: {
       type: GraphQLString,
       description: 'The type of this filter.',
+    },
+    values: {
+      type: GraphQLList(GraphQLString),
+      description: 'The values for enum type filters.',
     },
     created: createdField(),
     edited: editedField(),
