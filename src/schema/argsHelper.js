@@ -19,7 +19,7 @@ function getObjectListArgs(name) {
   };
   const peopleArgs = {
     ...standardArgs,
-    birth_year: { type: GraphQLInt },
+    birth_year: { type: GraphQLString },
     eye_color: { type: GraphQLString },
     gender: { type: GraphQLString },
     hair_color: { type: GraphQLString },

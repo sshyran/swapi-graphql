@@ -12269,7 +12269,7 @@
       },
       {
         "name": "birth_year",
-        "type": "number",
+        "type": "string",
         "created": "2022-04-14T15:07:01.792000Z",
         "edited": "2022-04-14T15:07:01.792000Z",
         "url": "https://swapi.dev/api/filter/2/"
