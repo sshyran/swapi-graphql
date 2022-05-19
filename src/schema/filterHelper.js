@@ -37,7 +37,7 @@ async function peopleHelper(objects, args) {
           return isIdentical(obj[arg], args[arg]);
         }
         if (arg.includes('Height')) {
-          return isInRange(args);
+          return isInRange(obj, args);
         }
       });
     }
@@ -53,7 +53,7 @@ function isIdentical(searchLocation, searchTerm) {
   return searchLocation === searchTerm;
 }
 
-function isInRange(args) {
+function isInRange(obj, args) {
   if (!args.minHeight) {
     args.minHeight = -9999;
   }
